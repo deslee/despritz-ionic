@@ -1,8 +1,22 @@
 <ion-view title="Despritz">
 
-  <ion-content class="des-content" has-header="true" has-tabs="true">
+  <ion-content scroll="false" class="des-content" has-header="true" has-subheader="true" has-tabs="true">
 
-    running!!!
+    <div class="row">
+    	<div class="col col-center">
+    		<span id="reticle" reticle>&nbsp;</span>
+    		<div id="word-container"><div word id="word">{{test}}</div></div>
+    		<div>
+	    		<span>{{wpm}} wpm</span> <input ng-model="wpm" type="range" min="200" max="550" id="wpm" />
+	    		<button class="button" ng-click="start()">Start</button>
+	    		<button class="button" ng-click="pause()">Pause</button>
+	    	</div>
+    		<div>
+	    		<input type="range" id="seeker" value="0" />
+	    	</div>
+    	</div>
+    </div>
+
 
   </ion-content>
 </ion-view>

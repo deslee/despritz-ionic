@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
+var module = angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
 
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -39,6 +39,7 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
       views: {
         'despritz': {
           templateUrl: 'templates/despritz.html',
+          controller: 'DespritzController',
         }
       }
     })
@@ -56,7 +57,66 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/');
 
-})
+});
 
-;
+module.directive('chooseFileButton', ['$location', function($location, $compile) {
+  var click = function(el) {
+    var evt = document.createEvent('Event');
+    evt.initEvent('click', true, true);
+    el.dispatchEvent(evt);
+  }
+      
+  var endHover = function(el) {
+    el.className = el.className.replace('button-light', 'button-dark');
+  }
 
+  var startHover = function(el) {
+    el.className = el.className.replace('button-dark', 'button-light');
+  }
+
+  return {
+    template: '{{buttonDialog}}',
+    link: function(scope, element, attrs) {
+      var killEvents = function(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+      }
+
+      var loadFile = function(file) {
+        reader = new FileReader();
+
+        var text = reader.readAsText(file);
+        reader.onloadend = function(e) {
+          var text = e.target.result;
+          scope.fileData(text);
+        }
+      }
+
+      // file input
+      element[0].onclick = function(e) {
+        click(document.querySelector('#'+attrs.chooseFileButton))
+      }
+      document.querySelector('#'+'fileInput').onchange = function(e) {
+        var file = e.target.files[0];
+        loadFile(file);
+      }
+
+
+      // drag drop
+      angular.forEach(['draginit','dragstart','dragover','dragleave','dragenter','dragend','drag','drop'], function(e){
+        element[0].addEventListener(e, killEvents);
+      });
+      element[0].addEventListener('dragenter', function(e) {
+        startHover(e.target);
+      }, false);
+      element[0].addEventListener('dragleave', function(e) {
+        endHover(e.target);
+      }, false);
+      element[0].addEventListener('drop', function(e) {
+        endHover(e.target);
+        var file = e.dataTransfer.files[0];
+        loadFile(file);
+      }, false);
+    },
+  };
+}]);

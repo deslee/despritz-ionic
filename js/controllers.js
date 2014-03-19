@@ -2,76 +2,79 @@ angular.module('starter.controllers', [])
 
 
 // A simple controller that fetches a list of data from a service
-.controller('ChooseFileCtrl', function($scope, $location, PetService) {
+.controller('ChooseFileCtrl', function($scope, $location, DespritzService) {
 	$scope.buttonDialog = 'Choose a file (or drag and drop)'
 	$scope.fileData = function(text) {
+		DespritzService.text = text;
 		$location.url('/run');
+    $scope.$apply();
 	}
 })
 
-.directive('chooseFileButton', ['$location', function($location, $compile, DespritzService) {
-  var click = function(el) {
-    var evt = document.createEvent('Event');
-    evt.initEvent('click', true, true);
-    el.dispatchEvent(evt);
-  }
-      
-  var endHover = function(el) {
-    el.className = el.className.replace('button-light', 'button-dark');
-  }
+.controller('DespritzController', function($scope, $location, DespritzService) {
+	if (!DespritzService.text) {
+		$location.url('/');
+    return;
+	}
+  DespritzService.session = DespritzService.init_session()
 
-  var startHover = function(el) {
-    el.className = el.className.replace('button-dark', 'button-light');
-  }
 
-  return {
-    template: '{{buttonDialog}}',
-    link: function(scope, element, attrs) {
-      var killEvents = function(evt) {
-        evt.stopPropagation();
-        evt.preventDefault();
+  $scope.$watch('', function() {
+    console.log('aah');
+    var word = document.getElementById('word');
+    var reticle = document.getElementById('reticle');
+    var seeker = document.getElementById('seeker');
+    var wpmslider = document.getElementById('wpm');
+
+    $scope.wpm = 200;
+    if (word && reticle && seeker) {
+      console.log('loading despritz');
+      console.log(word);
+      w = word;
+
+      var session = DespritzService.session;
+      session.elements.box = word;
+
+      seeker.onchange = function(e) {
+        session.set_index(e.target.value);
+      };
+
+      wpmslider.onchange = function(e) {
+        session.wpm = e.target.value;
       }
 
-	  var loadFile = function(file) {
-	    reader = new FileReader();
+      session.override('set_word', function(args, old) {
+        var session = this;
+        old.call(session, args);
 
-	    var text = reader.readAsText(file);
-	    reader.onloadend = function(e) {
-	      var text = e.target.result;
-	      scope.$apply(function() {
-	      	scope.fileData(text);
-	      })
-	    }
-	  }
+        var pivot_text = session.get_pivot_letter();
 
+        session.elements.box.style.left =
+          reticle.offsetLeft - pivot_text.offsetLeft - pivot_text.offsetWidth/2 + 'px'
 
-      // file input
-      element[0].onclick = function(e) {
-        click(document.querySelector('#'+attrs.chooseFileButton))
-      }
-      document.querySelector('#'+'fileInput').onchange = function(e) {
-        var file = e.target.files[0];
-        loadFile(file);
-      }
-
-
-      // drag drop
-      angular.forEach(['draginit','dragstart','dragover','dragleave','dragenter','dragend','drag','drop'], function(e){
-        element[0].addEventListener(e, killEvents);
+        seeker.value = session.index;
       });
-      element[0].addEventListener('dragenter', function(e) {
-        startHover(e.target);
-      }, false);
-      element[0].addEventListener('dragleave', function(e) {
-        endHover(e.target);
-      }, false);
-      element[0].addEventListener('drop', function(e) {
-        endHover(e.target);
-        var file = e.dataTransfer.files[0];
-        loadFile(file);
-      }, false);
-    },
-  };
-}])
 
-;
+      session.override('set_text', function(args, old) {
+        var session = this;
+        old.call(session, args);
+
+        seeker.max = session.words.length;;
+      })
+
+      session.set_text(DespritzService.text);
+      seeker.max = session.words.length;
+      seeker.value = 0;
+      session.update();
+    }
+  })
+
+  $scope.start = function() {
+    DespritzService.session.start();    
+  }
+
+  $scope.pause = function() {
+    DespritzService.session.running = false;
+  }
+
+});

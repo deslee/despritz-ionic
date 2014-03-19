@@ -45,3 +45,22 @@ body, .des-content {
 	width: 400px;
 	height: 225px;
 }
+
+#word {
+	font-family: "Inconsolata", Andale Mono, Monaco, Monospace;
+	font-size: 3em;
+	margin-bottom: 1em;
+	position: relative;
+}
+
+.pivot.letter {
+	color: red;
+}
+
+#seeker {
+	width: 100%;
+}
+
+#word-container {
+	text-align:left;
+}
