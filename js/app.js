@@ -58,22 +58,5 @@ angular.module('starter', ['ionic', 'starter.services', 'starter.controllers'])
 
 })
 
-
-
-.directive('chooseFileButton', function($compile) {
-  return {
-    template: '{{buttonDialog}}',
-    link: function(scope, element, attrs) {
-      var killEvents = function(evt) {
-        evt.stopPropagation();
-        evt.preventDefault();
-      }
-      console.log(scope);
-      console.log(element);
-      console.log(attrs);
-    },
-  };
-})
-
 ;
 

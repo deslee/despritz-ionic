@@ -24,4 +24,10 @@ angular.module('starter.services', [])
     }
   }
 })
+
+.factory('DespritzService', function() {
+  return {
+    hello: 'world',
+  }
+})
 ;
