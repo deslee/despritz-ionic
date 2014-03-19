@@ -1,0 +1,47 @@
+/* Your app's CSS, go crazy, make it your own */
+
+.ionic-logo {
+  display: block;
+  margin: 15px auto;
+  width: 96px;
+  height: 96px;
+}
+
+.button.button.button-dark {
+	background: #A33D47;
+}
+
+h2 {
+	color: #A33D47;
+}
+
+body, .des-content {
+	color: #A33D47;
+	background: #eee;
+}
+
+.bar.bar-dark {
+	background: url( data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAKElEQVQYV2O0s7P7z4AHMBKtgJ+fn+Hjx49gs5DZxJuAyxlwE2hnBQDiQxnRKHt6IgAAAABJRU5ErkJggg== ) fixed;
+}
+
+.des-content[scroll="false"] .scroll, .des-content[scroll="false"] .scroll .row {
+	height: 100%;
+}
+
+.des-content[scroll="false"] .scroll .row .col {
+	text-align: center;
+}
+
+.about {
+	max-width: 300px;
+	margin: 0 auto;
+}
+
+#fileInput {
+	display: none;
+}
+
+[choose-file-button] {
+	width: 400px;
+	height: 225px;
+}
